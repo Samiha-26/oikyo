@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Oikyo (ঐক্য) | Bangladesh Grassroots Social Development Platform",
@@ -18,9 +19,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-base-100 text-base-content">
         <Toaster position="top-center" />
         <Navbar />
-        <div className="flex-1 w-full flex flex-col">
+        <main className="flex-1 w-full flex flex-col">
           {children}
-        </div>
+        </main>
+        <Footer />
       </body>
     </html>
   );
