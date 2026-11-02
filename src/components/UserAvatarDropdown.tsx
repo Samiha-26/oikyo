@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LuChevronDown, LuCirclePlus, LuSlidersHorizontal, LuCalendarCheck, LuLogOut } from "react-icons/lu";
+import { LuChevronDown, LuCirclePlus, LuSlidersHorizontal, LuCalendarCheck, LuLogOut, LuUser } from "react-icons/lu";
 import { authClient } from "@/lib/auth-client";
 
 interface UserAvatarDropdownProps {
@@ -89,6 +89,20 @@ export default function UserAvatarDropdown({ user }: UserAvatarDropdownProps) {
         </li>
 
         <li className="pt-1">
+          <Link
+            href="/profile"
+            onClick={closeDropdown}
+            className="flex items-center justify-between text-xs font-semibold py-2 rounded-xl"
+          >
+            <span className="flex items-center gap-2">
+              <LuUser className="text-primary text-base" />
+              <span>Volunteer Profile</span>
+            </span>
+            <span className="badge badge-outline badge-xs">Passport</span>
+          </Link>
+        </li>
+
+        <li>
           <Link
             href="/create-event"
             onClick={closeDropdown}
