@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LuCirclePlus, LuCalendar, LuMapPin, LuUsers, LuImage, LuFileText, LuArrowLeft, LuCircleCheck, LuCircleAlert } from "react-icons/lu";
+import { LuCirclePlus, LuCalendar, LuMapPin, LuUsers, LuImage, LuFileText, LuArrowLeft, LuCircleCheck, LuCircleAlert, LuUserCheck } from "react-icons/lu";
 import EventPreviewCard from "@/components/create-event/EventPreviewCard";
 import { addEvent } from "@/lib/events";
+import { authClient } from "@/lib/auth-client";
 
 const categories = [
   "Winter Clothing",
@@ -24,6 +25,7 @@ const districts = [
 
 export default function CreateEventPage() {
   const router = useRouter();
+  const { data: session } = authClient.useSession();
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -41,6 +43,16 @@ export default function CreateEventPage() {
     creatorName: "Community Organizer",
     creatorEmail: "organizer@oikyo.org",
   });
+
+  useEffect(() => {
+    if (session?.user) {
+      setFormData((prev) => ({
+        ...prev,
+        creatorName: session.user.name || prev.creatorName,
+        creatorEmail: session.user.email || prev.creatorEmail,
+      }));
+    }
+  }, [session]);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -96,6 +108,9 @@ export default function CreateEventPage() {
     try {
       const payload = {
         ...formData,
+        creatorName: session?.user?.name || formData.creatorName || "Community Organizer",
+        creatorEmail: session?.user?.email || formData.creatorEmail || "organizer@oikyo.org",
+        creatorImage: session?.user?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
         volunteersJoined: 0,
         status: "active",
         createdAt: new Date().toISOString(),
@@ -143,6 +158,18 @@ export default function CreateEventPage() {
                 Coordinate winter clothing dispatch, medical camps, or cleanups with verified ward-level transparency. All fields update the live preview beside your form.
               </p>
             </div>
+
+            {session?.user && (
+              <div className="flex items-center gap-3 p-3 bg-base-200/60 rounded-2xl border border-base-200 text-xs">
+                <LuUserCheck className="text-primary text-base shrink-0" />
+                <div className="truncate">
+                  <span className="font-bold text-base-content mr-1.5">Posting as:</span>
+                  <span className="font-medium text-base-content/80">{session.user.name || "Organizer"}</span>
+                  <span className="text-base-content/40 mx-2">•</span>
+                  <span className="text-base-content/60">{session.user.email}</span>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="alert alert-error text-xs font-semibold rounded-2xl flex items-center gap-2">
