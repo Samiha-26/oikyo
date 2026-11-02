@@ -90,10 +90,10 @@ export default function EventFilters({
               className="select select-bordered select-sm w-full sm:w-44 text-xs rounded-xl bg-base-200/40"
               aria-label="Sort events"
             >
-              <option value="soonest">Date: Soonest First</option>
-              <option value="latest">Date: Furthest Out</option>
-              <option value="urgency">Spot Urgency (Most Spots Needed)</option>
-              <option value="popularity">Roster Fill Rate</option>
+              <option value="soonest">Earliest</option>
+              <option value="latest">Latest</option>
+              <option value="urgency">Most Spots Available</option>
+              <option value="popularity">Almost Full</option>
             </select>
           </div>
 
