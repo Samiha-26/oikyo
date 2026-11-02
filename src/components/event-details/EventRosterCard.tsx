@@ -100,7 +100,7 @@ export default function EventRosterCard({ event }: EventRosterCardProps) {
         {hasJoined ? (
           <div className="alert alert-success text-xs font-semibold rounded-2xl flex items-center gap-2">
             <LuCircleCheck className="text-base shrink-0" />
-            <span>You have joined this roster! Rendezvous instructions sent.</span>
+            <span>You have joined this roster! Meeting details sent.</span>
           </div>
         ) : isFull ? (
           <div className="alert alert-warning text-xs font-semibold rounded-2xl flex items-center gap-2">

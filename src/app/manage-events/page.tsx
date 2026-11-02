@@ -89,7 +89,7 @@ export default function ManageEventsPage() {
               Manage Community Drives
             </h1>
             <p className="text-sm text-base-content/75 leading-relaxed">
-              Review volunteer roster fulfillments, update rendezvous coordinates, and maintain ward-level transparency for your organized field operations.
+              Review volunteer roster fulfillments, update meeting locations, and maintain ward-level transparency for your organized field operations.
             </p>
           </div>
 

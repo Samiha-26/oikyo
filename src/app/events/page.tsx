@@ -26,7 +26,7 @@ export default async function EventsPage() {
               Upcoming Civic Action Drives
             </h1>
             <p className="text-sm sm:text-base text-base-content/75 leading-relaxed">
-              Explore community-led volunteer operations across all 64 districts. View live roster capacity, rendezvous points, and join with zero overhead. Past drives are automatically archived.
+              Explore community-led volunteer operations across all 64 districts. View live roster capacity, meeting points, and join with zero overhead. Past drives are automatically archived.
             </p>
           </div>
 

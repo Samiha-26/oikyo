@@ -24,7 +24,7 @@ export default function EventPreviewCard({ data }: EventPreviewCardProps) {
   const displayLocation = data.location.trim() || (data.district ? `${data.district}, Bangladesh` : "Event Location");
   const displayDescription =
     data.description.trim() ||
-    "Provide clear context about your humanitarian drive: logistics rendezvous points, recipient communities, and volunteer duties.";
+    "Provide clear context about your humanitarian drive: meeting locations, recipient communities, and volunteer duties.";
   const displayImage =
     data.image.trim() ||
     "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80";

@@ -36,10 +36,10 @@ export default function FeaturesSection() {
       badge: "Real-Time Mobilization",
       title: "Rapid Volunteer Deployment",
       description:
-        "Join relief operations with one click. Automated spot capacity reservations, scheduled rendezvous points, and roster management ensure safe and organized action.",
+        "Join relief operations with one click. Automated spot capacity reservations, scheduled meeting points, and roster management ensure safe and organized action.",
       points: [
         "Automated spot reservation",
-        "Rendezvous checkpoints & timings",
+        "Meeting locations & schedules",
         "Direct organizer dispatch notices",
       ],
       link: "/events",

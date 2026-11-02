@@ -86,7 +86,7 @@ export default function EventHeader({ event }: EventHeaderProps) {
           </div>
           <div>
             <div className="text-[11px] font-bold uppercase tracking-wider text-base-content/60">
-              Rendezvous Time
+              Meeting Time
             </div>
             <div className="font-semibold text-sm text-base-content mt-0.5">
               08:30 AM (Briefing & Dispatch)

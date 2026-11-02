@@ -248,7 +248,7 @@ export default function CreateEventPage() {
 
               <div>
                 <label className="label text-xs font-bold uppercase tracking-wider text-base-content/80">
-                  Rendezvous Location / Meeting Point
+                  Meeting Point & Address
                 </label>
                 <input
                   type="text"
