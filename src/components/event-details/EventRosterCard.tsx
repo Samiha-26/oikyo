@@ -1,24 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 import { LuUsers, LuUserCheck, LuCircleAlert, LuCircleCheck, LuShieldCheck } from "react-icons/lu";
 import { EventItem } from "@/components/EventCard";
-import { joinEvent } from "@/lib/events";
+import { joinEvent, getMyJoinedEvents } from "@/lib/events";
+import { authClient } from "@/lib/auth-client";
 
 interface EventRosterCardProps {
   event: EventItem;
 }
 
 export default function EventRosterCard({ event }: EventRosterCardProps) {
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [joinedCount, setJoinedCount] = useState(event.volunteersJoined || 0);
   const [hasJoined, setHasJoined] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const eventId = event._id || event.id || "";
   const needed = event.volunteersNeeded || 1;
   const isFull = joinedCount >= needed;
   const percentage = Math.min(Math.round((joinedCount / needed) * 100), 100);
   const spotsLeft = Math.max(needed - joinedCount, 0);
+
+  useEffect(() => {
+    if (session?.user?.email && eventId) {
+      getMyJoinedEvents(session.user.email).then((list) => {
+        if (Array.isArray(list)) {
+          const already = list.some(
+            (item) => item.eventId === eventId || item.eventTitle === event.title
+          );
+          if (already) setHasJoined(true);
+        }
+      });
+    }
+  }, [session, eventId, event.title]);
 
   const mockRoster = [
     {
@@ -44,12 +63,28 @@ export default function EventRosterCard({ event }: EventRosterCardProps) {
   const handleJoin = async () => {
     if (hasJoined || isFull || isSubmitting) return;
 
+    if (!session?.user) {
+      const res = await Swal.fire({
+        title: "Login Required",
+        text: "Please log in to register as a verified volunteer for this community drive.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Log In",
+        cancelButtonText: "Cancel",
+      });
+      if (res.isConfirmed) {
+        router.push("/signin");
+      }
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await joinEvent({
-        eventId: event._id || event.id || "",
-        userEmail: "volunteer@oikyo.org",
-        userName: "Community Volunteer",
+        eventId: eventId,
+        userEmail: session.user.email || "",
+        userName: session.user.name || "Community Volunteer",
+        userImage: session.user.image || undefined,
         eventTitle: event.title,
         eventDate: event.date,
         eventLocation: event.location,
@@ -58,9 +93,25 @@ export default function EventRosterCard({ event }: EventRosterCardProps) {
 
       setJoinedCount((prev) => prev + 1);
       setHasJoined(true);
+
+      const alertRes = await Swal.fire({
+        title: "Joined Successfully! 🎉",
+        text: `You have joined "${event.title}". Your spot is confirmed!`,
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: "View Joined Events",
+        cancelButtonText: "Stay on Page",
+      });
+
+      if (alertRes.isConfirmed) {
+        router.push("/joined-events");
+      }
     } catch {
-      setJoinedCount((prev) => prev + 1);
-      setHasJoined(true);
+      Swal.fire({
+        title: "Failed to Join",
+        text: "Could not join the event. Please ensure the server is running.",
+        icon: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
