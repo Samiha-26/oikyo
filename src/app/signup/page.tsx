@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { LuUser, LuMail, LuLock, LuEye, LuEyeOff, LuMapPin, LuArrowRight, LuCircleAlert } from "react-icons/lu";
 import AuthLeftBanner from "@/components/auth/AuthLeftBanner";
 import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicator";
+import { authClient } from "@/lib/auth-client";
 
 const districts = [
   "Dhaka", "Chattogram", "Rajshahi", "Khulna", "Barishal", "Sylhet", "Rangpur", "Mymensingh",
@@ -50,22 +51,37 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     try {
-      setTimeout(() => {
+      const res = await authClient.signUp.email({
+        name,
+        email,
+        password,
+      });
+
+      if (res.error) {
+        setError(res.error.message || "Failed to create account. Please try again.");
         setIsLoading(false);
-        router.push("/events");
-      }, 800);
-    } catch {
-      setError("Failed to create account. Please try again.");
+        return;
+      }
+
+      router.push("/events");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create account.");
       setIsLoading(false);
     }
   };
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/events",
+      });
+    } catch {
+      setError("Failed to sign in with Google.");
       setIsLoading(false);
-      router.push("/events");
-    }, 800);
+    }
   };
 
   return (

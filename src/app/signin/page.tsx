@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuMail, LuLock, LuEye, LuEyeOff, LuArrowRight, LuCircleAlert } from "react-icons/lu";
 import AuthLeftBanner from "@/components/auth/AuthLeftBanner";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -26,22 +27,36 @@ export default function SignInPage() {
 
     setIsLoading(true);
     try {
-      setTimeout(() => {
+      const res = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (res.error) {
+        setError(res.error.message || "Invalid email or password.");
         setIsLoading(false);
-        router.push("/events");
-      }, 800);
-    } catch {
-      setError("Invalid email or password.");
+        return;
+      }
+
+      router.push("/events");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to sign in.");
       setIsLoading(false);
     }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/events",
+      });
+    } catch {
+      setError("Failed to sign in with Google.");
       setIsLoading(false);
-      router.push("/events");
-    }, 800);
+    }
   };
 
   return (
