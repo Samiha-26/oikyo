@@ -2,71 +2,69 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { LuTicket, LuCalendar, LuShieldCheck, LuArrowRight, LuCircleCheck, LuCircleAlert } from "react-icons/lu";
+import Swal from "sweetalert2";
+import { LuTicket, LuCalendar, LuShieldCheck, LuArrowRight } from "react-icons/lu";
 import JoinedEventCard, { JoinedEventItem } from "@/components/joined-events/JoinedEventCard";
 import { getMyJoinedEvents, deleteJoinedEvent } from "@/lib/events";
-
-const fallbackJoined: JoinedEventItem[] = [
-  {
-    _id: "join_001",
-    eventId: "6724a1b8c001a1a1a1000001",
-    eventTitle: "North Bengal Cold-Wave Blanket & Thermal Clothing Relief",
-    eventDate: "2026-11-18",
-    eventLocation: "Tetulia Upazila Complex, Panchagarh",
-    category: "Winter Clothing",
-    joinedAt: "2026-11-01T15:30:00Z",
-  },
-  {
-    _id: "join_002",
-    eventId: "6724a1b8c001a1a1a1000003",
-    eventTitle: "Turag River Bank Cleanliness & Plastic Interception Drive",
-    eventDate: "2026-11-23",
-    eventLocation: "Ashulia Beribadh Point, Dhaka",
-    category: "Clean Environment",
-    joinedAt: "2026-11-02T10:00:00Z",
-  },
-];
+import { authClient } from "@/lib/auth-client";
 
 export default function JoinedEventsPage() {
+  const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const [joinedEvents, setJoinedEvents] = useState<JoinedEventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
-    loadJoined();
-  }, []);
+    if (session?.user?.email) {
+      loadJoined(session.user.email);
+    } else if (!isSessionLoading) {
+      setIsLoading(false);
+    }
+  }, [session, isSessionLoading]);
 
-  const loadJoined = async () => {
+  const loadJoined = async (email: string) => {
     setIsLoading(true);
     try {
-      const data = await getMyJoinedEvents("volunteer@oikyo.org");
-      if (Array.isArray(data) && data.length > 0) {
-        setJoinedEvents(data);
-      } else {
-        setJoinedEvents(fallbackJoined);
-      }
+      const data = await getMyJoinedEvents(email);
+      setJoinedEvents(Array.isArray(data) ? data : []);
     } catch {
-      setJoinedEvents(fallbackJoined);
+      setJoinedEvents([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancelSpot = async (id: string, title: string) => {
-    const confirmed = window.confirm(`Release your volunteer spot for "${title}"? This makes the spot available for another neighbor.`);
-    if (!confirmed) return;
+    const result = await Swal.fire({
+      title: "Release Volunteer Spot?",
+      text: `Are you sure you want to cancel your participation in "${title}"? This spot will be opened for other volunteers.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, release spot",
+      cancelButtonText: "Keep spot",
+    });
+
+    if (!result.isConfirmed) return;
 
     setCancellingId(id);
     try {
       await deleteJoinedEvent(id);
       setJoinedEvents((prev) => prev.filter((item) => item._id !== id));
-      setMessage({ type: "success", text: `Your spot for "${title}" has been released.` });
-      setTimeout(() => setMessage(null), 3000);
+      Swal.fire({
+        title: "Spot Released",
+        text: `You have released your spot for "${title}".`,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch {
-      setJoinedEvents((prev) => prev.filter((item) => item._id !== id));
-      setMessage({ type: "success", text: `Your spot for "${title}" has been released.` });
-      setTimeout(() => setMessage(null), 3000);
+      Swal.fire({
+        title: "Error",
+        text: "Failed to release the spot. Please try again.",
+        icon: "error",
+      });
     } finally {
       setCancellingId(null);
     }
@@ -102,21 +100,6 @@ export default function JoinedEventsPage() {
             <LuArrowRight className="text-sm" />
           </Link>
         </div>
-
-        {message && (
-          <div
-            className={`alert ${
-              message.type === "success" ? "alert-success" : "alert-error"
-            } text-xs font-semibold rounded-2xl flex items-center gap-2`}
-          >
-            {message.type === "success" ? (
-              <LuCircleCheck className="text-base shrink-0" />
-            ) : (
-              <LuCircleAlert className="text-base shrink-0" />
-            )}
-            <span>{message.text}</span>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-base-100 p-5 rounded-2xl border border-base-300 shadow-xs flex items-center gap-4">
