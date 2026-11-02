@@ -58,20 +58,7 @@ cd oikyo
 npm install
 ```
 
-### 3. Configure Environment Variables:
-Create a single `.env` file in the root directory:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_SECRET=oikyo_grassroots_better_auth_secret_key_2026
-MONGODB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/?authSource=admin
-GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-```
-
-### 4. Run the development server:
+### 3. Run the development server:
 ```bash
 npm run dev
 ```
