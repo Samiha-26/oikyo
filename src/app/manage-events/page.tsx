@@ -3,30 +3,36 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LuCirclePlus, LuSquarePen, LuTrash2, LuCalendar, LuMapPin, LuUsers, LuSparkles, LuCircleAlert, LuCircleCheck } from "react-icons/lu";
+import Swal from "sweetalert2";
+import { LuCirclePlus, LuSquarePen, LuTrash2, LuCalendar, LuMapPin, LuUsers, LuSparkles } from "react-icons/lu";
 import EditEventModal from "@/components/manage-events/EditEventModal";
 import { EventItem } from "@/components/EventCard";
-import { getAllEvents, updateEvent, deleteEvent } from "@/lib/events";
+import { getMyEvents, updateEvent, deleteEvent } from "@/lib/events";
+import { authClient } from "@/lib/auth-client";
 
 export default function ManageEventsPage() {
+  const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingEvent, setEditingEvent] = useState<EventItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
-    loadEvents();
-  }, []);
+    if (session?.user?.email) {
+      loadEvents(session.user.email);
+    } else if (!isSessionLoading) {
+      setIsLoading(false);
+    }
+  }, [session, isSessionLoading]);
 
-  const loadEvents = async () => {
+  const loadEvents = async (email: string) => {
     setIsLoading(true);
     try {
-      const data = await getAllEvents();
+      const data = await getMyEvents(email);
       setEvents(data);
     } catch {
-      setMessage({ type: "error", text: "Failed to load events." });
+      setEvents([]);
     } finally {
       setIsLoading(false);
     }
@@ -46,27 +52,53 @@ export default function ManageEventsPage() {
       setEvents((prev) =>
         prev.map((e) => ((e._id === id || e.id === id) ? { ...e, ...updatedData } : e))
       );
-      setMessage({ type: "success", text: "Event updated successfully!" });
-      setTimeout(() => setMessage(null), 3000);
+      Swal.fire({
+        title: "Updated!",
+        text: "Event details have been updated successfully.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch {
-      setMessage({ type: "error", text: "Failed to update event." });
-      setTimeout(() => setMessage(null), 3000);
+      Swal.fire({
+        title: "Update Failed",
+        text: "Could not update the event details.",
+        icon: "error",
+      });
     }
   };
 
   const handleDelete = async (id: string, title: string) => {
-    const confirmed = window.confirm(`Are you sure you want to cancel and delete "${title}"? This cannot be undone.`);
-    if (!confirmed) return;
+    const result = await Swal.fire({
+      title: "Delete Event?",
+      text: `Are you sure you want to cancel and delete "${title}"? This cannot be undone.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
 
     setDeletingId(id);
     try {
       await deleteEvent(id);
       setEvents((prev) => prev.filter((e) => e._id !== id && e.id !== id));
-      setMessage({ type: "success", text: `"${title}" has been deleted.` });
-      setTimeout(() => setMessage(null), 3000);
+      Swal.fire({
+        title: "Deleted!",
+        text: `"${title}" has been deleted.`,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch {
-      setMessage({ type: "error", text: "Failed to delete event." });
-      setTimeout(() => setMessage(null), 3000);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to delete the event.",
+        icon: "error",
+      });
     } finally {
       setDeletingId(null);
     }
@@ -101,21 +133,6 @@ export default function ManageEventsPage() {
             <span>Organize New Drive</span>
           </Link>
         </div>
-
-        {message && (
-          <div
-            className={`alert ${
-              message.type === "success" ? "alert-success" : "alert-error"
-            } text-xs font-semibold rounded-2xl flex items-center gap-2`}
-          >
-            {message.type === "success" ? (
-              <LuCircleCheck className="text-base shrink-0" />
-            ) : (
-              <LuCircleAlert className="text-base shrink-0" />
-            )}
-            <span>{message.text}</span>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-base-100 p-5 rounded-2xl border border-base-300 shadow-xs">
