@@ -1,16 +1,14 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
-import { LuMapPin, LuChevronDown, LuCirclePlus, LuSlidersHorizontal, LuCalendarCheck, LuLogOut, LuSun, LuMoon } from "react-icons/lu";
+import { LuMapPin, LuChevronDown, LuSun, LuMoon } from "react-icons/lu";
+import UserAvatarDropdown from "@/components/UserAvatarDropdown";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [theme, setTheme] = useState("oikyo-light");
 
@@ -25,18 +23,6 @@ export default function Navbar() {
     setTheme(nextTheme);
     document.documentElement.setAttribute("data-theme", nextTheme);
     localStorage.setItem("oikyo-theme", nextTheme);
-  };
-
-  const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          toast.success("Signed out successfully!");
-          router.push("/");
-          router.refresh();
-        },
-      },
-    });
   };
 
   return (
@@ -108,83 +94,8 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
               <div className="w-16 h-8 bg-base-300 animate-pulse rounded-lg"></div>
             </div>
-          ) : session ? (
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="tooltip tooltip-bottom flex items-center gap-2 p-1 rounded-full hover:bg-base-200 transition-colors cursor-pointer"
-                data-tip={session.user.name || "Volunteer Account"}
-              >
-                {session.user.image ? (
-                  <Image
-                    src={session.user.image}
-                    alt={session.user.name || "User avatar"}
-                    width={36}
-                    height={36}
-                    unoptimized
-                    className="w-9 h-9 rounded-full object-cover ring-2 ring-primary/30"
-                  />
-                ) : (
-                  <div className="w-9 h-9 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-sm">
-                    {session.user.name?.charAt(0).toUpperCase() || "V"}
-                  </div>
-                )}
-                <LuChevronDown className="text-xs text-base-content/60 hidden sm:block" />
-              </div>
-
-              <ul
-                tabIndex={0}
-                className="dropdown-content z-50 menu p-2 shadow-xl bg-base-100 rounded-2xl mt-3 w-60 border border-base-200"
-              >
-                <li className="menu-title px-3 py-2 border-b border-base-200">
-                  <span className="text-xs text-base-content/60 font-normal">Signed in as</span>
-                  <span className="text-sm font-bold text-base-content truncate">
-                    {session.user.email}
-                  </span>
-                </li>
-
-                <li className="mt-1">
-                  <Link href="/create-event" className="flex items-center justify-between text-xs font-semibold py-2">
-                    <span className="flex items-center gap-2">
-                      <LuCirclePlus className="text-primary text-base" />
-                      Create Event
-                    </span>
-                    <span className="badge badge-primary badge-xs">Private</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/manage-events" className="flex items-center justify-between text-xs font-semibold py-2">
-                    <span className="flex items-center gap-2">
-                      <LuSlidersHorizontal className="text-secondary text-base" />
-                      Manage Events
-                    </span>
-                    <span className="badge badge-ghost badge-xs">Owner</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/joined-events" className="flex items-center justify-between text-xs font-semibold py-2">
-                    <span className="flex items-center gap-2">
-                      <LuCalendarCheck className="text-accent text-base" />
-                      Joined Events
-                    </span>
-                    <span className="badge badge-accent badge-xs">Volunteer</span>
-                  </Link>
-                </li>
-
-                <div className="divider my-1"></div>
-
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 text-xs font-semibold text-error hover:bg-error/10 py-2"
-                  >
-                    <LuLogOut className="text-base" />
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
+          ) : session?.user ? (
+            <UserAvatarDropdown user={session.user} />
           ) : (
             <div className="flex items-center gap-2">
               <Link
