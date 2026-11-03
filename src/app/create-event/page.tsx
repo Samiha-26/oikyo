@@ -245,9 +245,8 @@ export default function CreateEventPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="label text-xs font-bold uppercase tracking-wider text-base-content/80 flex items-center justify-between">
-                    <span>Event Date</span>
-                    <span className="text-[10px] text-primary lowercase font-medium">must be future</span>
+                  <label className="label text-xs font-bold uppercase tracking-wider text-base-content/80">
+                    Event Date
                   </label>
                   <div className="relative">
                     <input
