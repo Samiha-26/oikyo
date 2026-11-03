@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { LuTicket, LuCalendar, LuShieldCheck, LuArrowRight } from "react-icons/lu";
 import JoinedEventCard, { JoinedEventItem } from "@/components/joined-events/JoinedEventCard";
@@ -9,6 +10,7 @@ import { getMyJoinedEvents, deleteJoinedEvent } from "@/lib/events";
 import { authClient } from "@/lib/auth-client";
 
 export default function JoinedEventsPage() {
+  const router = useRouter();
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const [joinedEvents, setJoinedEvents] = useState<JoinedEventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,9 +20,9 @@ export default function JoinedEventsPage() {
     if (session?.user?.email) {
       loadJoined(session.user.email);
     } else if (!isSessionLoading) {
-      setIsLoading(false);
+      router.push("/signin");
     }
-  }, [session, isSessionLoading]);
+  }, [session, isSessionLoading, router]);
 
   const loadJoined = async (email: string) => {
     setIsLoading(true);

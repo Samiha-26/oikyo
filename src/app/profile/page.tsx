@@ -30,6 +30,12 @@ export default function ProfilePage() {
   const [stats, setStats] = useState({ organizedCount: 0, joinedCount: 0 });
 
   useEffect(() => {
+    if (!isSessionLoading && !session?.user) {
+      router.push("/signin");
+    }
+  }, [session, isSessionLoading, router]);
+
+  useEffect(() => {
     if (session?.user) {
       setName(session.user.name || "");
       setImage(session.user.image || "");

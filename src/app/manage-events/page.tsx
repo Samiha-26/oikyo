@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import { LuCirclePlus, LuSquarePen, LuTrash2, LuCalendar, LuMapPin, LuUsers, LuSparkles } from "react-icons/lu";
@@ -11,6 +12,7 @@ import { getMyEvents, updateEvent, deleteEvent } from "@/lib/events";
 import { authClient } from "@/lib/auth-client";
 
 export default function ManageEventsPage() {
+  const router = useRouter();
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,9 +24,9 @@ export default function ManageEventsPage() {
     if (session?.user?.email) {
       loadEvents(session.user.email);
     } else if (!isSessionLoading) {
-      setIsLoading(false);
+      router.push("/signin");
     }
-  }, [session, isSessionLoading]);
+  }, [session, isSessionLoading, router]);
 
   const loadEvents = async (email: string) => {
     setIsLoading(true);

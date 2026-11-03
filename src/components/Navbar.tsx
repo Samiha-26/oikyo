@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-import { LuMapPin, LuChevronDown, LuSun, LuMoon } from "react-icons/lu";
+import { LuSun, LuMoon } from "react-icons/lu";
 import UserAvatarDropdown from "@/components/UserAvatarDropdown";
 
 export default function Navbar() {
@@ -43,15 +43,6 @@ export default function Navbar() {
               </span>
             </div>
           </Link>
-
-          <div className="hidden xl:flex items-center gap-2 bg-base-200 px-3.5 py-1.5 rounded-full text-xs text-base-content">
-            <LuMapPin className="text-primary text-sm shrink-0" />
-            <span className="font-bold">Dhaka Metro:</span>
-            <span className="text-base-content/70 truncate max-w-[190px]">
-              Mirpur 10, Dhanmondi, Mohammadpur
-            </span>
-            <LuChevronDown className="text-xs text-secondary" />
-          </div>
         </div>
 
         <nav className="hidden md:flex items-center gap-2">

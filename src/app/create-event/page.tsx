@@ -25,7 +25,13 @@ const districts = [
 
 export default function CreateEventPage() {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending: isSessionLoading } = authClient.useSession();
+
+  useEffect(() => {
+    if (!isSessionLoading && !session?.user) {
+      router.push("/signin");
+    }
+  }, [session, isSessionLoading, router]);
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
