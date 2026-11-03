@@ -61,3 +61,29 @@
   --radius-field: 0.5rem;
   --radius-box: 1rem;
 }
+
+/* Custom styling for select inputs and option popovers across light/dark themes */
+select.select,
+select {
+  color-scheme: light dark;
+}
+
+[data-theme="oikyo-light"] select.select,
+[data-theme="oikyo-light"] select,
+[data-theme="oikyo-light"] select option {
+  background-color: #ffffff !important;
+  color: #1b1c1d !important;
+}
+
+[data-theme="oikyo-dark"] select.select,
+[data-theme="oikyo-dark"] select,
+[data-theme="oikyo-dark"] select option {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+select option {
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+}

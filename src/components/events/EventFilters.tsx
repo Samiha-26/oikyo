@@ -70,12 +70,12 @@ export default function EventFilters({
             <select
               value={selectedDistrict}
               onChange={(e) => setSelectedDistrict(e.target.value)}
-              className="select select-bordered select-sm w-full sm:w-44 text-xs rounded-xl bg-base-200/40"
+              className="select select-bordered select-sm w-full sm:w-44 text-xs rounded-xl bg-base-100 border-base-300 font-medium text-base-content focus:border-primary shadow-xs cursor-pointer"
               aria-label="Filter by district"
             >
-              <option value="All">All Districts (64)</option>
+              <option value="All" className="bg-base-100 text-base-content">All Districts (64)</option>
               {districts.map((district) => (
-                <option key={district} value={district}>
+                <option key={district} value={district} className="bg-base-100 text-base-content">
                   {district}
                 </option>
               ))}
@@ -87,13 +87,13 @@ export default function EventFilters({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="select select-bordered select-sm w-full sm:w-44 text-xs rounded-xl bg-base-200/40"
+              className="select select-bordered select-sm w-full sm:w-44 text-xs rounded-xl bg-base-100 border-base-300 font-medium text-base-content focus:border-primary shadow-xs cursor-pointer"
               aria-label="Sort events"
             >
-              <option value="soonest">Earliest</option>
-              <option value="latest">Latest</option>
-              <option value="urgency">Most Spots Available</option>
-              <option value="popularity">Almost Full</option>
+              <option value="soonest" className="bg-base-100 text-base-content">Earliest</option>
+              <option value="latest" className="bg-base-100 text-base-content">Latest</option>
+              <option value="urgency" className="bg-base-100 text-base-content">Most Spots Available</option>
+              <option value="popularity" className="bg-base-100 text-base-content">Almost Full</option>
             </select>
           </div>
 

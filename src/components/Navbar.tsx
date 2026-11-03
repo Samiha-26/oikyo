@@ -25,9 +25,11 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("oikyo-theme") || "oikyo-light";
-    setTheme(savedTheme);
-    document.documentElement.setAttribute("data-theme", savedTheme);
+    const currentTheme =
+      document.documentElement.getAttribute("data-theme") ||
+      localStorage.getItem("oikyo-theme") ||
+      "oikyo-light";
+    setTheme(currentTheme);
   }, []);
 
   // Close mobile menu on route change

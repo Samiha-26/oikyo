@@ -222,10 +222,10 @@ export default function SignUpPage() {
                   <select
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="select select-bordered w-full pl-10 text-sm bg-base-200/40 rounded-xl"
+                    className="select select-bordered w-full pl-10 text-sm bg-base-100 border-base-300 rounded-xl font-medium text-base-content focus:border-primary shadow-xs cursor-pointer"
                   >
                     {districts.map((d) => (
-                      <option key={d} value={d}>{d}</option>
+                      <option key={d} value={d} className="bg-base-100 text-base-content py-2">{d}</option>
                     ))}
                   </select>
                 </div>

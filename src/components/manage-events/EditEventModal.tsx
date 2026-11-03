@@ -140,10 +140,10 @@ export default function EditEventModal({
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="select select-bordered w-full text-sm bg-base-200/40 rounded-xl"
+                className="select select-bordered w-full text-sm bg-base-100 border-base-300 rounded-xl font-medium text-base-content focus:border-primary shadow-xs cursor-pointer"
               >
                 {categories.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c} className="bg-base-100 text-base-content py-2">{c}</option>
                 ))}
               </select>
             </div>
