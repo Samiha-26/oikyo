@@ -1,88 +1,92 @@
-# Oikyo (ঐক্য) — Bangladesh Grassroots Coalition
+# Oikyo (ঐক্য)
 
-> **A Community-Driven Civic Development & Emergency Relief Platform**  
-> **Live Site URL**: [https://oikyo-topaz.vercel.app](https://oikyo-topaz.vercel.app)  
-> **Client Repository**: [c:/projects/oikyo](https://github.com/Samiha-26/oikyo)  
-> **Server Repository**: [c:/projects/oikyo-server](https://github.com/Samiha-26/oikyo-server)
+**Oikyo (ঐক্য)** is a civic impact platform designed to mobilize, coordinate, and track social service events across all 64 districts of Bangladesh. Built for grassroots community resilience, the platform lets organizers launch verified relief campaigns—such as winter clothing distributions, canal cleanups, medical camps, and coastal tree planting—while giving volunteers transparent rosters to sign up and participate with ease.
 
----
+Live site: https://oikyo-topaz.vercel.app
 
-## 🌟 Overview
+Client repository: https://github.com/Samiha-26/oikyo
 
-**Oikyo (ঐক্য)** is an editorial civic impact platform designed to mobilize, coordinate, and track social service events across all 64 districts of Bangladesh. Built specifically for grassroots community resilience, the platform empowers verified organizers to launch relief campaigns (such as North Bengal winter clothing distributions, canal cleanups, pediatric camps, and coastal mangrove planting) while offering volunteers instant, transparent participation rosters with zero bureaucratic friction.
+Server repository: https://github.com/Samiha-26/oikyo-server
 
----
+## Features
 
-## ✨ Key Features (5+ Core Capabilities)
+- Browse community service events across Bangladesh, filter by category (Cleanup, Plantation, Donation, Winter Clothing, Medical Relief, Education, Water Sanitation) or district, and view the six newest upcoming drives on the home page.
+- Register with name, email, profile photo URL, and password (enforcing uppercase, lowercase, and minimum 6 characters) or sign in with Google. Private routes send unauthenticated users to Login, and reloading a private page keeps you logged in.
+- Create social service drives with title, category, district, location, cover image, volunteer quota, and strict future-date validation. Manage, edit, or delete your own created events from Manage Events with custom SweetAlert confirmation dialogs.
+- Join an event directly from its details page. Each drive tracks its capacity with a live quota progress bar that increments on join and disables enrollment once all spots are filled.
+- You cannot join the same event twice. Joined Events lists every event you have signed up for, sorted chronologically by event date, with a button to release your spot if you can no longer attend.
+- The Express API verifies JSON Web Tokens using remote JWKS on every protected route, ensuring only logged-in users can create, update, delete, or join events, and only the creator can edit their own drive.
+- Light and dark themes with a toggle in the navbar, interactive 64-district impact map, shimmering loading skeletons, volunteer profile editor, and a fully responsive layout with the official X logo in the footer.
 
-* **🗺️ 64-District Verified Civic Drives Explorer**: Filter upcoming relief initiatives in real time by category (*Winter Clothing*, *Medical Relief*, *Clean Environment*, *Tree Planting*, *Education & Youth*, *Water Sanitation*), district, search keywords, and chronological date sorting. Past operations are strictly archived.
-* **📊 Real-Time Volunteer Spot Capacity Quota**: Interactive visual capacity progress bars on every event card indicate current volunteer enrollments versus target quotas (e.g. `28/35 spots filled • 80%`), preventing overcrowding and ensuring optimal logistical deployment.
-* **🔐 BetterAuth & Google OAuth Authentication**: Robust authentication system supporting Email/Password with real-time password strength verification (length ≥ 6, uppercase, lowercase) and 1-click Google OAuth sign-in, paired with session persistence and avatar display tooltips.
-* **🛡️ Protected Organizer Dashboard & SweetAlert2 Modals**: Secure, private routes (`/create-event`, `/manage-events`, `/joined-events`, `/profile`) guarded by Next.js 16 route proxying. Organizers can create drives with strict future-date validation, update details, or delete campaigns using interactive SweetAlert2 confirmation dialogs.
-* **🎫 Volunteer Mission Passport & Instant Roster Join**: Volunteers can join active initiatives in one click, instantly incrementing the database quota and populating their chronological Mission Passport with meeting points, coordinator briefings, and one-click spot release.
-* **⚡ Streaming Loading Skeletons**: Tailored DaisyUI shimmering skeleton components for event cards, explorer grids, and event details pages to ensure fluid, zero-layout-shift streaming experiences.
-* **👤 Volunteer Profile Management**: Full profile passport allowing volunteers to view their organized initiatives, joined deployments, standing badges, and update their display name and profile picture URL with live session sync.
-* **🌓 System-Wide Light/Dark Mode**: Built-in DaisyUI theme toggle switching between crisp daylight editorial slate and rich deep night mode without UI flickers.
+## Tech stack
 
----
+- Next.js 16 (App Router) with TypeScript
+- Tailwind CSS and DaisyUI
+- BetterAuth with MongoDB adapter, Google OAuth, and the JWT plugin
+- Express.js with the official MongoDB driver
+- Jose for remote JWKS token verification
+- SweetAlert2, React Hot Toast, and React Icons
 
-## 🛠️ Tech Stack
+## Project structure
 
-### Frontend (Client)
-* **Framework**: Next.js 16 (App Router, Server & Client Components)
-* **Language**: TypeScript
-* **Styling**: Tailwind CSS + DaisyUI (Custom Oikyo Light & Dark themes)
-* **Icons**: React Icons (`react-icons/lu` Lucide pack)
-* **Modals & Alerts**: SweetAlert2 (`sweetalert2`), React Hot Toast (`react-hot-toast`)
-* **Authentication**: BetterAuth + MongoDB Adapter
-* **Data Fetching**: Native Fetch with dynamic caching and Next.js Route Handlers
-
-### Backend (Server)
-* **Framework**: Express.js (Node.js ESM)
-* **Database**: MongoDB Atlas Native Driver (`MongoClient`, `ObjectId`)
-* **Security & Tokens**: `jose` (JWT verification with remote JWKS)
-* **Middleware**: `cors`, `dotenv`
-
----
-
-## 🚀 Getting Started Locally
-
-### 1. Clone the repository:
-```bash
-git clone https://github.com/Samiha-26/oikyo.git
-cd oikyo
+```text
+oikyo/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── auth/[...all]/
+│   │   ├── create-event/
+│   │   ├── events/
+│   │   │   ├── [id]/
+│   │   │   └── page.tsx
+│   │   ├── impact-map/
+│   │   ├── joined-events/
+│   │   ├── manage-events/
+│   │   ├── profile/
+│   │   ├── signin/
+│   │   ├── signup/
+│   │   ├── layout.tsx
+│   │   ├── not-found.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── auth/
+│   │   ├── create-event/
+│   │   ├── event-details/
+│   │   ├── events/
+│   │   ├── impact/
+│   │   ├── joined-events/
+│   │   ├── manage-events/
+│   │   ├── EventCard.tsx
+│   │   ├── EventCardSkeleton.tsx
+│   │   ├── FeaturesSection.tsx
+│   │   ├── Footer.tsx
+│   │   ├── GallerySection.tsx
+│   │   ├── HeroSection.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── NewsletterSection.tsx
+│   │   ├── TestimonialsSection.tsx
+│   │   └── UserAvatarDropdown.tsx
+│   └── lib/
+│       ├── auth.ts
+│       ├── auth-client.ts
+│       └── events.ts
+├── public/
+├── package.json
+└── README.md
 ```
 
-### 2. Install dependencies:
+## Run it locally
+
+Clone this repository and install packages:
+
 ```bash
 npm install
 ```
 
-### 3. Run the development server:
+Start the Oikyo server, then run the client:
+
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to experience Oikyo!
-
----
-
-## 📋 Available Routes
-
-| Route | Access | Purpose |
-| :--- | :--- | :--- |
-| `/` | Public | Civic solidarity landing page, features, recent drives, impact stats, testimonials, photo gallery |
-| `/events` | Public | 64-district upcoming drives explorer with reactive category, district, and sort filters |
-| `/events/:id` | Public | Event details, organizer credentials, logistics meeting points, live volunteer roster, and Join button |
-| `/signin` | Public | Email/Password login, Google OAuth, validation rules |
-| `/signup` | Public | Volunteer registration with real-time password criteria validation |
-| `/create-event` | **Private** | Event creation with strictly future-date validation and interactive card preview |
-| `/manage-events`| **Private** | Organizer management table with SweetAlert2 update and delete confirmations |
-| `/joined-events`| **Private** | Chronologically sorted volunteer mission passport with SweetAlert2 spot release |
-| `/profile` | **Private** | Profile view, volunteer metrics, and credential update modal |
-| `/*` (404) | Public | Unmatched route error page with navigation to Home and events |
-
----
-
-## 📄 License
-This project is open-source under the MIT License.
+Open http://localhost:3000 in your browser.
