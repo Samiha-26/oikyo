@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LuUser, LuMail, LuLock, LuEye, LuEyeOff, LuMapPin, LuArrowRight, LuCircleAlert } from "react-icons/lu";
+import { LuUser, LuMail, LuLock, LuEye, LuEyeOff, LuMapPin, LuArrowRight, LuCircleAlert, LuImage } from "react-icons/lu";
+import Swal from "sweetalert2";
 import AuthLeftBanner from "@/components/auth/AuthLeftBanner";
 import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicator";
 import { authClient } from "@/lib/auth-client";
@@ -18,6 +19,7 @@ export default function SignUpPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
   const [district, setDistrict] = useState("Dhaka");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +46,16 @@ export default function SignUpPage() {
       return;
     }
 
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain at least one uppercase letter (A-Z).");
+      return;
+    }
+
+    if (!/[a-z]/.test(password)) {
+      setError("Password must contain at least one lowercase letter (a-z).");
+      return;
+    }
+
     if (!agreeTerms) {
       setError("You must agree to the Non-Partisan Civic Code of Conduct.");
       return;
@@ -55,6 +67,7 @@ export default function SignUpPage() {
         name,
         email,
         password,
+        image: photoURL.trim() || undefined,
       });
 
       if (res.error) {
@@ -62,6 +75,14 @@ export default function SignUpPage() {
         setIsLoading(false);
         return;
       }
+
+      await Swal.fire({
+        title: "Account Created! 🎉",
+        text: "Welcome to Oikyo. Loading your community portal...",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
 
       window.location.href = "/events";
     } catch (err) {
@@ -208,6 +229,25 @@ export default function SignUpPage() {
                     ))}
                   </select>
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="label text-xs font-bold uppercase tracking-wider text-base-content/80 flex items-center justify-between">
+                <span>Profile Photo URL</span>
+                <span className="text-[10px] text-base-content/50 lowercase font-medium">optional</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-base-content/50">
+                  <LuImage className="text-base" />
+                </div>
+                <input
+                  type="url"
+                  value={photoURL}
+                  onChange={(e) => setPhotoURL(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className="input input-bordered w-full pl-10 text-sm bg-base-200/40 rounded-xl"
+                />
               </div>
             </div>
 

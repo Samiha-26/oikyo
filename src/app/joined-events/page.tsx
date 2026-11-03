@@ -28,7 +28,10 @@ export default function JoinedEventsPage() {
     setIsLoading(true);
     try {
       const data = await getMyJoinedEvents(email);
-      setJoinedEvents(Array.isArray(data) ? data : []);
+      const sorted = Array.isArray(data)
+        ? [...data].sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
+        : [];
+      setJoinedEvents(sorted);
     } catch {
       setJoinedEvents([]);
     } finally {

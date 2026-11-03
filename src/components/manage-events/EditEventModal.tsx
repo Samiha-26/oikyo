@@ -5,9 +5,11 @@ import { LuX, LuSave, LuCircleAlert } from "react-icons/lu";
 import { EventItem } from "@/components/EventCard";
 
 const categories = [
+  "Cleanup",
+  "Plantation",
+  "Donation",
   "Winter Clothing",
   "Medical Relief",
-  "Clean Environment",
   "Tree Planting",
   "Education & Youth",
   "Water Sanitation",

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuMail, LuLock, LuEye, LuEyeOff, LuArrowRight, LuCircleAlert } from "react-icons/lu";
+import Swal from "sweetalert2";
 import AuthLeftBanner from "@/components/auth/AuthLeftBanner";
 import { authClient } from "@/lib/auth-client";
 
@@ -37,6 +38,14 @@ export default function SignInPage() {
         setIsLoading(false);
         return;
       }
+
+      await Swal.fire({
+        title: "Signed In! 👋",
+        text: "Welcome back to Oikyo. Loading your organizer portal...",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
 
       window.location.href = "/events";
     } catch (err) {

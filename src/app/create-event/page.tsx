@@ -9,9 +9,11 @@ import { addEvent } from "@/lib/events";
 import { authClient } from "@/lib/auth-client";
 
 const categories = [
+  "Cleanup",
+  "Plantation",
+  "Donation",
   "Winter Clothing",
   "Medical Relief",
-  "Clean Environment",
   "Tree Planting",
   "Education & Youth",
   "Water Sanitation",
