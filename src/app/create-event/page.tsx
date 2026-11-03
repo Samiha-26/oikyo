@@ -119,10 +119,10 @@ export default function CreateEventPage() {
       await addEvent(payload);
       setSuccess(true);
       setTimeout(() => {
-        router.push("/events");
+        window.location.href = "/events";
       }, 1500);
-    } catch {
-      setError("Failed to create event. Please verify server connection.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create event. Please verify server connection.");
     } finally {
       setIsSubmitting(false);
     }

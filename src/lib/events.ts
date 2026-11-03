@@ -1,6 +1,35 @@
 import { EventItem } from "@/components/EventCard";
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== "undefined" && !window.location.hostname.includes("localhost")
+    ? "https://oikyo-server.vercel.app"
+    : "http://localhost:8000");
+
+export async function getAuthToken(): Promise<string | null> {
+  try {
+    if (typeof window === "undefined") return null;
+    const res = await fetch("/api/auth/token", {
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.token || null;
+  } catch {
+    return null;
+  }
+}
+
+async function getAuthHeaders(): Promise<HeadersInit> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  const token = await getAuthToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
 
 const fallbackRecentEvents: EventItem[] = [
   {
@@ -146,27 +175,43 @@ export async function getEventById(id: string): Promise<EventItem | null> {
 }
 
 export async function addEvent(eventData: Partial<EventItem>) {
+  const headers = await getAuthHeaders();
   const res = await fetch(`${API_BASE}/add-event`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(eventData),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.message || "Failed to create event");
+  }
   return res.json();
 }
 
 export async function updateEvent(id: string, updateData: Partial<EventItem>) {
+  const headers = await getAuthHeaders();
   const res = await fetch(`${API_BASE}/event/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(updateData),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.message || "Failed to update event");
+  }
   return res.json();
 }
 
 export async function deleteEvent(id: string) {
+  const headers = await getAuthHeaders();
   const res = await fetch(`${API_BASE}/event/${id}`, {
     method: "DELETE",
+    headers,
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.message || "Failed to delete event");
+  }
   return res.json();
 }
 
@@ -180,17 +225,24 @@ export async function joinEvent(joinData: {
   eventLocation: string;
   category: string;
 }) {
+  const headers = await getAuthHeaders();
   const res = await fetch(`${API_BASE}/join-event`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(joinData),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.message || "Failed to join event");
+  }
   return res.json();
 }
 
 export async function getMyEvents(email: string): Promise<EventItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/my-events/${email}`, {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE}/my-events/${encodeURIComponent(email)}`, {
+      headers,
       cache: "no-store",
     });
     if (!res.ok) return [];
@@ -202,7 +254,9 @@ export async function getMyEvents(email: string): Promise<EventItem[]> {
 
 export async function getMyJoinedEvents(email: string): Promise<any[]> {
   try {
-    const res = await fetch(`${API_BASE}/my-joined-events/${email}`, {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE}/my-joined-events/${encodeURIComponent(email)}`, {
+      headers,
       cache: "no-store",
     });
     if (!res.ok) return [];
@@ -213,8 +267,14 @@ export async function getMyJoinedEvents(email: string): Promise<any[]> {
 }
 
 export async function deleteJoinedEvent(id: string) {
+  const headers = await getAuthHeaders();
   const res = await fetch(`${API_BASE}/my-joined-events/${id}`, {
     method: "DELETE",
+    headers,
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.message || "Failed to cancel event registration");
+  }
   return res.json();
 }

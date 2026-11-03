@@ -106,10 +106,10 @@ export default function EventRosterCard({ event }: EventRosterCardProps) {
       if (alertRes.isConfirmed) {
         router.push("/joined-events");
       }
-    } catch {
+    } catch (err) {
       Swal.fire({
         title: "Failed to Join",
-        text: "Could not join the event. Please ensure the server is running.",
+        text: err instanceof Error ? err.message : "Could not join the event. Please ensure the server is running.",
         icon: "error",
       });
     } finally {

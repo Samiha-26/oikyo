@@ -32,6 +32,12 @@ export const auth = betterAuth({
     "https://*.vercel.app",
     "http://localhost:3000",
   ],
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
+    },
+  },
   emailAndPassword: {
     enabled: true,
   },
