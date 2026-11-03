@@ -38,8 +38,7 @@ export default function SignInPage() {
         return;
       }
 
-      router.push("/events");
-      router.refresh();
+      window.location.href = "/events";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to sign in.");
       setIsLoading(false);
@@ -49,9 +48,10 @@ export default function SignInPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "https://oikyo-topaz.vercel.app";
       const res = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/events",
+        callbackURL: `${origin}/events`,
       });
       if (res?.error) {
         setError(res.error.message || "Failed to sign in with Google.");

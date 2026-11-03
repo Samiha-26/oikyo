@@ -31,14 +31,12 @@ export default function UserAvatarDropdown({ user }: UserAvatarDropdownProps) {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push("/signin");
-            router.refresh();
+            window.location.href = "/signin";
           },
         },
       });
     } catch {
-      router.push("/signin");
-      router.refresh();
+      window.location.href = "/signin";
     } finally {
       setIsSigningOut(false);
     }
