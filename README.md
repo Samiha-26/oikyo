@@ -1,7 +1,7 @@
 # Oikyo (ঐক্য) — Bangladesh Grassroots Coalition
 
 > **A Community-Driven Civic Development & Emergency Relief Platform**  
-> **Live Site URL**: [https://oikyo.vercel.app](https://oikyo.vercel.app) *(or your deployed production URL)*  
+> **Live Site URL**: [https://oikyo-topaz.vercel.app](https://oikyo-topaz.vercel.app)  
 > **Client Repository**: [c:/projects/oikyo](https://github.com/Samiha-26/oikyo)  
 > **Server Repository**: [c:/projects/oikyo-server](https://github.com/Samiha-26/oikyo-server)
 

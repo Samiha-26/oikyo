@@ -74,12 +74,16 @@ export default function SignUpPage() {
   const handleGoogleSignUp = async () => {
     setIsLoading(true);
     try {
-      await authClient.signIn.social({
+      const res = await authClient.signIn.social({
         provider: "google",
         callbackURL: "/events",
       });
-    } catch {
-      setError("Failed to sign in with Google.");
+      if (res?.error) {
+        setError(res.error.message || "Failed to sign in with Google.");
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to sign in with Google.");
       setIsLoading(false);
     }
   };
